@@ -1,0 +1,210 @@
+{
+  "format": 1,
+  "restore": {
+    "G:\\GDrive-orrasto\\Projects\\ERMA.MMO\\ERMA.MMO\\ERMA.MMO.csproj": {}
+  },
+  "projects": {
+    "G:\\GDrive-orrasto\\Projects\\Connectivity\\Connectivity\\Connectivity.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "G:\\GDrive-orrasto\\Projects\\Connectivity\\Connectivity\\Connectivity.csproj",
+        "projectName": "Connectivity",
+        "projectPath": "G:\\GDrive-orrasto\\Projects\\Connectivity\\Connectivity\\Connectivity.csproj",
+        "packagesPath": "C:\\Users\\orras\\.nuget\\packages\\",
+        "outputPath": "G:\\GDrive-orrasto\\Projects\\Connectivity\\Connectivity\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\orras\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp2.1": {
+            "targetAlias": "netcoreapp2.1",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp2.1": {
+          "targetAlias": "netcoreapp2.1",
+          "dependencies": {
+            "Microsoft.NETCore.App": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.1.0, )",
+              "autoReferenced": true
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "G:\\GDrive-orrasto\\Projects\\DatabaseConnector\\DatabaseConnector\\DatabaseConnector.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "G:\\GDrive-orrasto\\Projects\\DatabaseConnector\\DatabaseConnector\\DatabaseConnector.csproj",
+        "projectName": "DatabaseConnector",
+        "projectPath": "G:\\GDrive-orrasto\\Projects\\DatabaseConnector\\DatabaseConnector\\DatabaseConnector.csproj",
+        "packagesPath": "C:\\Users\\orras\\.nuget\\packages\\",
+        "outputPath": "G:\\GDrive-orrasto\\Projects\\DatabaseConnector\\DatabaseConnector\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\orras\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
+          "dependencies": {
+            "MySql.Data": {
+              "target": "Package",
+              "version": "[8.0.21, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "G:\\GDrive-orrasto\\Projects\\ERMA.MMO\\ERMA.MMO\\ERMA.MMO.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "G:\\GDrive-orrasto\\Projects\\ERMA.MMO\\ERMA.MMO\\ERMA.MMO.csproj",
+        "projectName": "ERMA.MMO",
+        "projectPath": "G:\\GDrive-orrasto\\Projects\\ERMA.MMO\\ERMA.MMO\\ERMA.MMO.csproj",
+        "packagesPath": "C:\\Users\\orras\\.nuget\\packages\\",
+        "outputPath": "G:\\GDrive-orrasto\\Projects\\ERMA.MMO\\ERMA.MMO\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\orras\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "G:\\GDrive-orrasto\\Projects\\Connectivity\\Connectivity\\Connectivity.csproj": {
+                "projectPath": "G:\\GDrive-orrasto\\Projects\\Connectivity\\Connectivity\\Connectivity.csproj"
+              },
+              "G:\\GDrive-orrasto\\Projects\\DatabaseConnector\\DatabaseConnector\\DatabaseConnector.csproj": {
+                "projectPath": "G:\\GDrive-orrasto\\Projects\\DatabaseConnector\\DatabaseConnector\\DatabaseConnector.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "ini-parser": {
+              "target": "Package",
+              "version": "[2.5.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

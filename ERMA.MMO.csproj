@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ini-parser" Version="2.5.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Connectivity\Connectivity\Connectivity.csproj" />
+    <ProjectReference Include="..\..\DatabaseConnector\DatabaseConnector\DatabaseConnector.csproj" />
+  </ItemGroup>
+
+</Project>
