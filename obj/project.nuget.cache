@@ -1,12 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "HLOqKm/WkJ/WRAoAD1Y3Qj0Nd746c+A6eBWKKmgYZ5zxGQ3kIG207U9feIhvBLTfZWxOUZbZ8r33uekaKyLK6g==",
+  "dgSpecHash": "b9+yUgCTdn4bvN/q/S3TwsGFTfpYL5g7cpAD0SWGhT7OfskJL7v7bnyjaZds9phgGubMcEnRD4odNo3nOCZf2w==",
   "success": true,
   "projectFilePath": "G:\\GDrive-orrasto\\Projects\\ERMA.MMO\\ERMA.MMO\\ERMA.MMO.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\orras\\.nuget\\packages\\bouncycastle.netcore\\1.8.3\\bouncycastle.netcore.1.8.3.nupkg.sha512",
     "C:\\Users\\orras\\.nuget\\packages\\google.protobuf\\3.6.1\\google.protobuf.3.6.1.nupkg.sha512",
-    "C:\\Users\\orras\\.nuget\\packages\\ini-parser\\2.5.2\\ini-parser.2.5.2.nupkg.sha512",
     "C:\\Users\\orras\\.nuget\\packages\\k4os.compression.lz4\\1.1.11\\k4os.compression.lz4.1.1.11.nupkg.sha512",
     "C:\\Users\\orras\\.nuget\\packages\\k4os.compression.lz4.streams\\1.1.11\\k4os.compression.lz4.streams.1.1.11.nupkg.sha512",
     "C:\\Users\\orras\\.nuget\\packages\\k4os.hash.xxhash\\1.0.6\\k4os.hash.xxhash.1.0.6.nupkg.sha512",
@@ -107,16 +106,5 @@
     "C:\\Users\\orras\\.nuget\\packages\\system.xml.xpath\\4.0.1\\system.xml.xpath.4.0.1.nupkg.sha512",
     "C:\\Users\\orras\\.nuget\\packages\\system.xml.xpath.xmldocument\\4.0.1\\system.xml.xpath.xmldocument.4.0.1.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1701",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'ini-parser 2.5.2' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8' instead of the project target framework 'net5.0'. This package may not be fully compatible with your project.",
-      "libraryId": "ini-parser",
-      "targetGraphs": [
-        "net5.0"
-      ]
-    }
-  ]
+  "logs": []
 }

@@ -28,15 +28,6 @@
           "lib/netstandard1.0/Google.Protobuf.dll": {}
         }
       },
-      "ini-parser/2.5.2": {
-        "type": "package",
-        "compile": {
-          "lib/net20/INIFileParser.dll": {}
-        },
-        "runtime": {
-          "lib/net20/INIFileParser.dll": {}
-        }
-      },
       "K4os.Compression.LZ4/1.1.11": {
         "type": "package",
         "dependencies": {
@@ -1701,7 +1692,7 @@
       },
       "Connectivity/1.0.0": {
         "type": "project",
-        "framework": ".NETCoreApp,Version=v2.1",
+        "framework": ".NETCoreApp,Version=v5.0",
         "compile": {
           "bin/placeholder/Connectivity.dll": {}
         },
@@ -1711,7 +1702,7 @@
       },
       "DatabaseConnector/1.0.0": {
         "type": "project",
-        "framework": ".NETCoreApp,Version=v3.1",
+        "framework": ".NETCoreApp,Version=v5.0",
         "dependencies": {
           "MySql.Data": "8.0.21"
         },
@@ -1765,20 +1756,6 @@
         "lib/net45/Google.Protobuf.xml",
         "lib/netstandard1.0/Google.Protobuf.dll",
         "lib/netstandard1.0/Google.Protobuf.xml"
-      ]
-    },
-    "ini-parser/2.5.2": {
-      "sha512": "hp3gKmC/14+6eKLgv7Jd1Z7OV86lO+tNfOXr/stQbwmRhdQuXVSvrRAuAe7G5+lwhkov0XkqZ8/bn1PYWMx6eg==",
-      "type": "package",
-      "path": "ini-parser/2.5.2",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "ini-parser.2.5.2.nupkg.sha512",
-        "ini-parser.nuspec",
-        "lib/net20/INIFileParser.dll",
-        "lib/net20/INIFileParser.dll.mdb",
-        "lib/net20/INIFileParser.xml"
       ]
     },
     "K4os.Compression.LZ4/1.1.11": {
@@ -6004,8 +5981,7 @@
   "projectFileDependencyGroups": {
     "net5.0": [
       "Connectivity >= 1.0.0",
-      "DatabaseConnector >= 1.0.0",
-      "ini-parser >= 2.5.2"
+      "DatabaseConnector >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -6061,12 +6037,6 @@
     "frameworks": {
       "net5.0": {
         "targetAlias": "net5.0",
-        "dependencies": {
-          "ini-parser": {
-            "target": "Package",
-            "version": "[2.5.2, )"
-          }
-        },
         "imports": [
           "net461",
           "net462",
@@ -6085,17 +6055,5 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "NU1701",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'ini-parser 2.5.2' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8' instead of the project target framework 'net5.0'. This package may not be fully compatible with your project.",
-      "libraryId": "ini-parser",
-      "targetGraphs": [
-        "net5.0"
-      ]
-    }
-  ]
+  }
 }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,31 +18,47 @@ namespace ERMA.MMO
     /// </summary>
     public class Sandbox : ISandboxClientConnector
     {
-        protected PacketFunctionsDictionary PacketFunctionsDictionary;
+        /// <summary>
+        /// 
+        /// </summary>
+        protected PacketActionDictionary PacketActionsDictionary;
+        /// <summary>
+        /// Database connector
+        /// </summary>
         protected DatabaseConnector.DatabaseConnector DBConnector;
+        /// <summary>
+        /// All servers created under this sandbox
+        /// </summary>
         protected List<ConnectionServer> Servers = new List<ConnectionServer>();
+        /// <summary>
+        /// All clients created under this sandbox
+        /// </summary>
         protected List<ConnectionClient> Clients = new List<ConnectionClient>();
-        protected ConfigSet ConfigurationSetup;
+        /// <summary>
+        /// InvokeIncomingClientsFunction will look for method in this class
+        /// </summary>
         protected Type ChildClassType;
 
-        public Sandbox(ConfigSet configuration, PacketFunctionDictionaryType packetFunctionDictionaryType, Type childType=null)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="packetFunctionDictionary"></param>
+        /// <param name="childType"></param>
+        public Sandbox(PacketActionDictionary packetFunctionDictionary, Type childType=null)
         {
             if (childType == null)
                 ChildClassType = this.GetType();
             else
                 ChildClassType = childType;
-            FirstTimeInit(configuration, packetFunctionDictionaryType);
+            SetPacketFunctionsDictionary(packetFunctionDictionary);
         }
         /// <summary>
-        /// This method is called only from constructor.
+        /// 
         /// </summary>
-        /// <param name="configuration"></param>
-        /// <param name="packetFunctionDictionaryType"></param>
-        private void FirstTimeInit(ConfigSet configuration, PacketFunctionDictionaryType packetFunctionDictionaryType)
+        /// <param name="packetFunctionDictionary"></param>
+        public void SetPacketFunctionsDictionary(PacketActionDictionary packetFunctionDictionary)
         {
-            ConfigurationSetup = configuration;
-            PacketFunctionsDictionary = new PacketFunctionsDictionary(packetFunctionDictionaryType, (IGenericDatabaseConnector)DBConnector);
-            PacketFunctionsDictionary.UpdateDictionaryFromDatabase();
+            PacketActionsDictionary = packetFunctionDictionary;
         }
 
         /// <summary>
@@ -49,7 +66,6 @@ namespace ERMA.MMO
         /// </summary>
         public void Start()
         {
-            // todo: start all servers and clients
             foreach (ConnectionServer server in Servers)
                 server.Start();
             foreach (ConnectionClient client in Clients)
@@ -60,7 +76,6 @@ namespace ERMA.MMO
         /// </summary>
         public void Stop()
         {
-            // todo: start all servers and clients
             foreach (ConnectionServer server in Servers)
                 server.Stop();
             foreach (ConnectionClient client in Clients)
@@ -70,7 +85,10 @@ namespace ERMA.MMO
         /// <summary>
         /// Creates instance of TCP server on port
         /// </summary>
-        public ConnectionServer CreateTCPServer(ushort port)
+        /// <param name="port"></param>
+        /// <param name="protocol">Default is TCP</param>
+        /// <returns></returns>
+        public ConnectionServer CreateServer(ushort port, ConnectionProtocol protocol = ConnectionProtocol.TCP)
         {
             var newServer = new ConnectionServer(port, this);
             Servers.Add(newServer);
@@ -79,32 +97,15 @@ namespace ERMA.MMO
         /// <summary>
         /// Creates instance of TCP client that will connect to specific host:port
         /// </summary>
-        public ConnectionClient CreateTCPClient(string host, ushort port)
+        /// <param name="host"></param>
+        /// <param name="port"></param>
+        /// <param name="protocol">Default is TCP</param>
+        /// <returns></returns>
+        public ConnectionClient CreateClient(string host, ushort port, ConnectionProtocol protocol=ConnectionProtocol.TCP)
         {
             var newClient = new ConnectionClient(host, port, this);
             Clients.Add(newClient);
             return newClient;
-        }
-        /// <summary>
-        /// Creates instance of UDP server on port
-        /// </summary>
-        /// <param name="port"></param>
-        /// <returns></returns>
-        public ConnectionServer CreateUDPServer(ushort port)
-        {
-            // TODO
-            return null;
-        }
-        /// <summary>
-        /// Creates instance of UDP client that will connect to specific host:port
-        /// </summary>
-        /// <param name="host"></param>
-        /// <param name="port"></param>
-        /// <returns></returns>
-        public ConnectionClient CreateUDPClient(string host, ushort port)
-        {
-            // TODO
-            return null;
         }
         /// <summary>
         /// Creates MySQL DB connector
@@ -117,15 +118,23 @@ namespace ERMA.MMO
         {
             DBConnector = new DatabaseConnector.DatabaseConnector(dbHost, dbLogin, dbPassword, dbDatabase);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="methodName"></param>
+        /// <returns></returns>
         protected MethodInfo GetMethodByName(String methodName)
         {
             MethodInfo mInfo = ChildClassType.GetMethod(methodName, new Type[] { typeof(PacketData) });
             return mInfo;
         }
-        public PacketFunctionsDictionary GetPacketFunctionsDictionary()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public PacketActionDictionary GetPacketActionsDictionary()
         {
-            return PacketFunctionsDictionary;
+            return PacketActionsDictionary;
         }
         /// <summary>
         /// Invokes method in child class for packet handling
@@ -134,25 +143,75 @@ namespace ERMA.MMO
         /// <param name="packetID"></param>
         /// <param name="packetData"></param>
         /// <returns></returns>
-        public virtual bool InvokeIncomingClientsFunction(Client client, PacketID packetID, PacketData packetData)
+        public virtual bool InvokeIncomingClientsFunction(Client client, int packetID, PacketData packetData)
         {
-            var functionToCall = GetPacketFunctionsDictionary().GetFunction(packetID);
+            var dictionary = GetPacketActionsDictionary();
+            if (dictionary == null)
+            {
+                Console.WriteLine("Sandbox: InvokeIncomingClientsFunction - Dictionary was not set.");
+                return false;
+            }
+            var functionToCall = dictionary.GetFunction(packetID);
             if (functionToCall != null)
             {
-                Console.WriteLine("InvokeIncomingClientsFunction - PacketFunction:"+functionToCall.Name);
+                //Console.WriteLine("InvokeIncomingClientsFunction - PacketFunction:"+functionToCall.Name);
                 MethodInfo method = GetMethodByName(functionToCall.Name);
                 if (method != null)
                 {
                     object result = null;
                     object[] parametersArray = new object[] { packetData };
                     result = method.Invoke(this, parametersArray);
+                    return true;
                 }
                 else
-                    Console.WriteLine("InvokeIncomingClientsFunction - Unhandled packet: Assigned method was not found in the application.");
+                {
+                    Console.WriteLine("Sandbox: InvokeIncomingClientsFunction - Unhandled packet: Assigned method was not found in the application.");
+                    return false;
+                }
             }
             else
-                Console.WriteLine("InvokeIncomingClientsFunction - Unhandled packet: No method was assigned to handle the packet.");
-            return true;
+            {
+                Console.WriteLine("Sandbox: InvokeIncomingClientsFunction - Unhandled packet: No method was assigned to handle the packet.");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Makes an object from json string. Mandatory to know a type of object
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="jsonString"></param>
+        /// <returns></returns>
+        public static T JsonDeserialize<T>(string jsonString)
+        {
+            try
+            {
+                var NameObject = JsonSerializer.Deserialize<T>(jsonString);
+                return NameObject;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            return default(T);
+        }
+        /// <summary>
+        /// Makes a json string from object
+        /// </summary>
+        /// <param name="objectToSerialize"></param>
+        /// <returns></returns>
+        public static string JsonSerialize(object objectToSerialize)
+        {
+            string jsonString = "";
+            try
+            {
+                jsonString = JsonSerializer.Serialize(objectToSerialize, objectToSerialize.GetType());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            return jsonString;
         }
     }
 }

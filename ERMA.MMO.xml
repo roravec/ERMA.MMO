@@ -1,0 +1,482 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ERMA.MMO</name>
+    </assembly>
+    <members>
+        <member name="T:ERMA.MMO.Client">
+            <summary>
+            Universal Client parent - this class provides basic funcionality for connection clients
+            It has ConnectionHandler, Sandbox connector, event for DataReceived, Send() nethod for simple sending and it also implements packet processing method. 
+            </summary>
+            <example>
+            You should use this as parent for you own class because it does not provide funcionality for communication or you can provide your own ConnectionHandler to this class.
+            Use either <ref cref="T:ERMA.MMO.ConnectionClient">ConnectionClient</ref> for Client to server connection or use 
+            </example>
+        </member>
+        <member name="F:ERMA.MMO.Client.Handler">
+            <summary>
+            Connaction handler that provides basic events and funcionality for socket communication
+            </summary>
+        </member>
+        <member name="F:ERMA.MMO.Client.SandboxConnector">
+            <summary>
+            Connector to Sandbox which will provide packet action sorting
+            </summary>
+        </member>
+        <member name="F:ERMA.MMO.Client.Protocol">
+            <summary>
+            Connection socket protocol used 
+            </summary>
+        </member>
+        <member name="M:ERMA.MMO.Client.#ctor(Connectivity.ConnectionHandler,ERMA.MMO.ISandboxClientConnector,Connectivity.ConnectionProtocol)">
+            <summary>
+            If connection was already established provide ConnectionHandler of this connection
+            </summary>
+            <param name="connHandler"></param>
+            <param name="iSandboxConnector"></param>
+            <param name="protocol">Default is TCP, you can choose between TCP and UDP</param>
+        </member>
+        <member name="M:ERMA.MMO.Client.#ctor(ERMA.MMO.ISandboxClientConnector,Connectivity.ConnectionProtocol)">
+            <summary>
+            Use only from inherited object and dont forget to set handler in constructor!
+            </summary>
+            <param name="iSandboxConnector"></param>
+            <param name="protocol">Default is TCP, you can choose between TCP and UDP</param>
+        </member>
+        <member name="M:ERMA.MMO.Client.SetHandler(Connectivity.ConnectionHandler)">
+            <summary>
+            
+            </summary>
+            <param name="handler"></param>
+        </member>
+        <member name="M:ERMA.MMO.Client.DataReceived(Connectivity.RawPacket)">
+            <summary>
+            Client has received data - eventDataReceived will call this method
+            </summary>
+            <param name="data"></param>
+        </member>
+        <member name="M:ERMA.MMO.Client.ConnectionStatusChanged(Connectivity.SocketClient.ConnectionStatus)">
+            <summary>
+            Do something when connection status was changed
+            </summary>
+            <param name="status"></param>
+        </member>
+        <member name="M:ERMA.MMO.Client.Send(Connectivity.Packet)">
+            <summary>
+            Send Packet to this remote client
+            </summary>
+            <param name="packet"></param>
+        </member>
+        <member name="M:ERMA.MMO.Client.Destroy">
+            <summary>
+            Call after client was disconnected to do cleaning after him
+            It is called from Dispose() !
+            </summary>
+        </member>
+        <member name="M:ERMA.MMO.Client.Dispose">
+            <summary>
+            Implemented from IDisposable - will do clean up after object's destruction
+            </summary>
+        </member>
+        <member name="T:ERMA.MMO.ConnectionClient">
+            <summary>
+            Client that can connect standalone to server
+            </summary>
+        </member>
+        <member name="P:ERMA.MMO.ConnectionClient.Host">
+            <summary>
+            Hostname
+            </summary>
+        </member>
+        <member name="P:ERMA.MMO.ConnectionClient.Port">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:ERMA.MMO.ConnectionClient.Client">
+            <summary>
+            Instance of Connectivity.SocketClient
+            Whole communication is driven by this.
+            </summary>
+        </member>
+        <member name="M:ERMA.MMO.ConnectionClient.#ctor(System.String,System.UInt16,ERMA.MMO.ISandboxClientConnector,Connectivity.ConnectionProtocol)">
+            <summary>
+            Create instance of ConnectionClient which is inherited from Client so you can easily send and receive messages over TCP/IP
+            Check <see cref="F:ERMA.MMO.ConnectionClient.Client">Client</see> for more information about available methods.
+            </summary>
+            <param name="ihost"></param>
+            <param name="iport"></param>
+            <param name="sandboxConnector"></param>
+            <param name="protocol">Default is TCP, you can choose between TCP and UDP</param>
+        </member>
+        <member name="M:ERMA.MMO.ConnectionClient.Connect">
+            <summary>
+            Start a connection to server
+            </summary>
+        </member>
+        <member name="M:ERMA.MMO.ConnectionClient.Disconnect">
+            <summary>
+            Stops the connection to server
+            </summary>
+        </member>
+        <member name="M:ERMA.MMO.ConnectionClient.GetConnectionStatus">
+            <summary>
+            
+            </summary>
+            <returns>Current connection status of the client</returns>
+        </member>
+        <member name="T:ERMA.MMO.ConnectionServer">
+            <summary>
+            Wrapper around Connectivity.SocketServer
+            Provides easy way to create and manage TCP/UDP socket server
+            ERMA.MMO.ConnectionServer is suppose to run under ERMA.MMO.Sandbox (can be easily created from there) or other ISandboxClientConnector 
+            because clients of server and server itself will call ISandboxClientConnector for packet sorting.
+            </summary>
+            <example>
+            First create Sandbox! Or any other ISandboxClientConnector
+            Call ConnectionServer(ushort port, ISandboxClientConnector)
+            Subscribe to events EventNewClientConnected and EventClientDisconnected
+            </example>
+        </member>
+        <member name="T:ERMA.MMO.ConnectionServer.delNewClientConnected">
+            <summary>
+            Delegate for EventNewClientConnected
+            </summary>
+            <param name="client"></param>
+        </member>
+        <member name="E:ERMA.MMO.ConnectionServer.EventNewClientConnected">
+            <summary>
+            Fired when new client connect to server and added to clients list. Pass null pointer of Client - event will set the new client there.
+            </summary>
+        </member>
+        <member name="T:ERMA.MMO.ConnectionServer.delClientDisconnected">
+            <summary>
+            Delegate for event EventClientDisconnected
+            </summary>
+            <param name="client"></param>
+        </member>
+        <member name="E:ERMA.MMO.ConnectionServer.EventClientDisconnected">
+            <summary>
+            Fired when new client has been disconnected from server and removed from clients list. Pass null pointer of Client - event will set the disconnected client there.
+            </summary>
+        </member>
+        <member name="F:ERMA.MMO.ConnectionServer.Protocol">
+            <summary>
+            Connection socket protocol used 
+            </summary>
+        </member>
+        <member name="P:ERMA.MMO.ConnectionServer.Port">
+            <summary>
+            Server is listening on this port
+            </summary>
+        </member>
+        <member name="F:ERMA.MMO.ConnectionServer.SandboxConnector">
+            <summary>
+            Connector to Sandbox which will provide packet action sorting
+            </summary>
+        </member>
+        <member name="P:ERMA.MMO.ConnectionServer.ServerThread">
+            <summary>
+            Server will listen on this thread
+            </summary>
+        </member>
+        <member name="F:ERMA.MMO.ConnectionServer.ListeningLoopAction">
+            <summary>
+            Action to call server listening function
+            </summary>
+        </member>
+        <member name="F:ERMA.MMO.ConnectionServer.Running">
+            <summary>
+            Is server fully running?
+            </summary>
+        </member>
+        <member name="M:ERMA.MMO.ConnectionServer.#ctor(System.UInt16,ERMA.MMO.ISandboxClientConnector,Connectivity.ConnectionProtocol,System.Action)">
+            <summary>
+            
+            </summary>
+            <param name="port"></param>
+            <param name="isbc"></param>
+            <param name="protocol">Default is TCP, you can choose between TCP and UDP</param>
+            <param name="customListeningLoopAction"></param>
+        </member>
+        <member name="M:ERMA.MMO.ConnectionServer.Start">
+            <summary>
+            It will create unique thread that will handle communication listening
+            </summary>
+            <returns>1 - successful; 0 - already running</returns>
+        </member>
+        <member name="M:ERMA.MMO.ConnectionServer.StartListeningLoop">
+            <summary>
+            Do not run this in main thread, in will create listening loop
+            </summary>
+        </member>
+        <member name="M:ERMA.MMO.ConnectionServer.Stop">
+            <summary>
+            Interrupts socket server listening thread
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ERMA.MMO.ConnectionServer.SetServerThread(System.Threading.Thread)">
+            <summary>
+            Set custom thread where server will be listening
+            </summary>
+            <param name="thread"></param>
+        </member>
+        <member name="M:ERMA.MMO.ConnectionServer.GetServerThread">
+            <summary>
+            Server is listening on this thread
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ERMA.MMO.ConnectionServer.ClientsAdd(ERMA.MMO.Client)">
+            <summary>
+            Add new client to list. Use only when new client is connected.
+            </summary>
+            <param name="client"></param>
+        </member>
+        <member name="M:ERMA.MMO.ConnectionServer.GetClientInListByConnectionHandler(Connectivity.ConnectionHandler)">
+            <summary>
+            
+            </summary>
+            <param name="client"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ERMA.MMO.ConnectionServer.ClientsRemove(Connectivity.ConnectionHandler)">
+            <summary>
+            Remove client from list of clients - use only after client was disconnected.
+            </summary>
+            <param name="client"></param>
+        </member>
+        <member name="M:ERMA.MMO.ConnectionServer.ClientsRemove(ERMA.MMO.Client)">
+            <summary>
+            Remove client from list of clients - use only after client was disconnected.
+            </summary>
+            <param name="client"></param>
+        </member>
+        <member name="T:ERMA.MMO.ISandboxClientConnector">
+            <summary>
+            Provides interface for clients to call packet actions/methods thru Sandbox
+            </summary>
+        </member>
+        <member name="M:ERMA.MMO.ISandboxClientConnector.InvokeIncomingClientsFunction(ERMA.MMO.Client,System.Int32,Connectivity.PacketData)">
+            <summary>
+            Client can call Sandbox method to Invoke Packets action
+            </summary>
+            <param name="client"></param>
+            <param name="packetID"></param>
+            <param name="packetData"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ERMA.MMO.PacketAction">
+            <summary>
+            Class for storing database object od PacketAction
+            Provides just basic informations about Packets like PacketID for identification of a packet, his Name, direction of a communication 
+            and mainly the name of a Method that is called when packet will come to processing
+            </summary>
+        </member>
+        <member name="P:ERMA.MMO.PacketAction.ID">
+            <summary>
+            ID of packet id database
+            </summary>
+        </member>
+        <member name="P:ERMA.MMO.PacketAction.PacketID">
+            <summary>
+            Actual Packet ID
+            </summary>
+        </member>
+        <member name="P:ERMA.MMO.PacketAction.PacketDirection">
+            <summary>
+            Direction of packet - probably will not be used
+            </summary>
+        </member>
+        <member name="P:ERMA.MMO.PacketAction.Name">
+            <summary>
+            Name of a method (packet action)
+            </summary>
+        </member>
+        <member name="P:ERMA.MMO.PacketAction.Description">
+            <summary>
+            Description of packet funcionality
+            </summary>
+        </member>
+        <member name="P:ERMA.MMO.PacketAction.NumberOfParameters">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:ERMA.MMO.PacketActionDictionary">
+            <summary>
+            Dictionary of packet actions - provides methods for reading packets actions from database
+            Normally you should create instance od PacketActionDictionary with DictionaryID that is same as application you are building.
+            Dictionary will then read all posiible packets for this communication from DB and it will be able to provide "name of packet action" to sandbox - wchich will run the action.
+            </summary>
+        </member>
+        <member name="M:ERMA.MMO.PacketActionDictionary.#ctor(System.Int16,DatabaseConnector.IGenericDatabaseConnector)">
+            <summary>
+            Create instance with already established access to database.
+            It will automatically update dictionary from database.
+            </summary>
+            <param name="iPacketFunctionDictionaryID"></param>
+            <param name="dbConnector"></param>
+        </member>
+        <member name="M:ERMA.MMO.PacketActionDictionary.#ctor(System.Int16)">
+            <summary>
+            Create instance without access to database.
+            You have to provide dictionary manually or you can add packet actions manually by method AddNewAction
+            </summary>
+            <param name="iPacketFunctionDictionaryID"></param>
+        </member>
+        <member name="F:ERMA.MMO.PacketActionDictionary.DictionaryID">
+            <summary>
+            CRITICAL - Specifies what functions will be used in this application
+            </summary>
+        </member>
+        <member name="F:ERMA.MMO.PacketActionDictionary.DBConnector">
+            <summary>
+            Database connector
+            </summary>
+        </member>
+        <member name="F:ERMA.MMO.PacketActionDictionary.PacketActions">
+            <summary>
+            List of all actions of current dictionary
+            </summary>
+        </member>
+        <member name="M:ERMA.MMO.PacketActionDictionary.AddNewAction(ERMA.MMO.PacketAction)">
+            <summary>
+            Add a new action to current dictionary manually
+            </summary>
+            <param name="packetFunction"></param>
+        </member>
+        <member name="M:ERMA.MMO.PacketActionDictionary.UpdateDictionaryFromDatabase">
+            <summary>
+            Updates actual function dictionary from database
+            </summary>
+        </member>
+        <member name="M:ERMA.MMO.PacketActionDictionary.GetFunction(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="packetID"></param>
+            <returns>null if packetID is not in the list</returns>
+        </member>
+        <member name="T:ERMA.MMO.Sandbox">
+            <summary>
+            Class provides functionality for creating TCP/UDP servers and clients, DB connection, packet handling.
+            Inherit from this class to make your own Sandbox MMO application
+            In constructor provide Type childType - this is a type of class where you define all packet methods
+            </summary>
+        </member>
+        <member name="F:ERMA.MMO.Sandbox.PacketActionsDictionary">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:ERMA.MMO.Sandbox.DBConnector">
+            <summary>
+            Database connector
+            </summary>
+        </member>
+        <member name="F:ERMA.MMO.Sandbox.Servers">
+            <summary>
+            All servers created under this sandbox
+            </summary>
+        </member>
+        <member name="F:ERMA.MMO.Sandbox.Clients">
+            <summary>
+            All clients created under this sandbox
+            </summary>
+        </member>
+        <member name="F:ERMA.MMO.Sandbox.ChildClassType">
+            <summary>
+            InvokeIncomingClientsFunction will look for method in this class
+            </summary>
+        </member>
+        <member name="M:ERMA.MMO.Sandbox.#ctor(ERMA.MMO.PacketActionDictionary,System.Type)">
+            <summary>
+            
+            </summary>
+            <param name="packetFunctionDictionary"></param>
+            <param name="childType"></param>
+        </member>
+        <member name="M:ERMA.MMO.Sandbox.SetPacketFunctionsDictionary(ERMA.MMO.PacketActionDictionary)">
+            <summary>
+            
+            </summary>
+            <param name="packetFunctionDictionary"></param>
+        </member>
+        <member name="M:ERMA.MMO.Sandbox.Start">
+            <summary>
+            Starts all servers and clients
+            </summary>
+        </member>
+        <member name="M:ERMA.MMO.Sandbox.Stop">
+            <summary>
+            Stops all servers and clients
+            </summary>
+        </member>
+        <member name="M:ERMA.MMO.Sandbox.CreateServer(System.UInt16,Connectivity.ConnectionProtocol)">
+            <summary>
+            Creates instance of TCP server on port
+            </summary>
+            <param name="port"></param>
+            <param name="protocol">Default is TCP</param>
+            <returns></returns>
+        </member>
+        <member name="M:ERMA.MMO.Sandbox.CreateClient(System.String,System.UInt16,Connectivity.ConnectionProtocol)">
+            <summary>
+            Creates instance of TCP client that will connect to specific host:port
+            </summary>
+            <param name="host"></param>
+            <param name="port"></param>
+            <param name="protocol">Default is TCP</param>
+            <returns></returns>
+        </member>
+        <member name="M:ERMA.MMO.Sandbox.CreateDBConnection(System.String,System.String,System.String,System.String)">
+            <summary>
+            Creates MySQL DB connector
+            </summary>
+            <param name="dbHost"></param>
+            <param name="dbLogin"></param>
+            <param name="dbPassword"></param>
+            <param name="dbDatabase"></param>
+        </member>
+        <member name="M:ERMA.MMO.Sandbox.GetMethodByName(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="methodName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ERMA.MMO.Sandbox.GetPacketActionsDictionary">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ERMA.MMO.Sandbox.InvokeIncomingClientsFunction(ERMA.MMO.Client,System.Int32,Connectivity.PacketData)">
+            <summary>
+            Invokes method in child class for packet handling
+            </summary>
+            <param name="client"></param>
+            <param name="packetID"></param>
+            <param name="packetData"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ERMA.MMO.Sandbox.JsonDeserialize``1(System.String)">
+            <summary>
+            Makes an object from json string. Mandatory to know a type of object
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="jsonString"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ERMA.MMO.Sandbox.JsonSerialize(System.Object)">
+            <summary>
+            Makes a json string from object
+            </summary>
+            <param name="objectToSerialize"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

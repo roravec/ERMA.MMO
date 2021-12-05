@@ -1,0 +1,708 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Connectivity</name>
+    </assembly>
+    <members>
+        <member name="T:Connectivity.ConnectionProtocol">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Connectivity.ConnectionProtocol.TCP">
+            <summary>
+            </summary>
+        </member>
+        <member name="F:Connectivity.ConnectionProtocol.UDP">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:Connectivity.ConnectionHandler">
+            <summary>
+            Object takes care of storage of received data and process the data to Packets.
+            User of this class is suppose to "take" received and processed packets from ConcurrentQueue - ReceivedPackets
+            Use method GetPacket() to receive and process just one packet of data - you can use method HavePacketsToHandle() to check if there are any packets to Get
+            </summary>
+            <example>
+            You should receive packets from handler like this:
+            <code>
+            while (HasPacketsToHandle())
+                var packet = GetPacket();
+            </code>
+            </example>
+        </member>
+        <member name="F:Connectivity.ConnectionHandler.BufferSize">
+            <summary>
+            Size of buffer for receiving/sending data in one pocket
+            </summary>
+        </member>
+        <member name="M:Connectivity.ConnectionHandler.#ctor(System.Net.Sockets.Socket)">
+            <summary>
+            
+            </summary>
+            <param name="socket"></param>
+        </member>
+        <member name="M:Connectivity.ConnectionHandler.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Connectivity.ConnectionHandler.Protocol">
+            <summary>
+            Connection socket protocol used 
+            </summary>
+        </member>
+        <member name="P:Connectivity.ConnectionHandler.WorkSocket">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Connectivity.ConnectionHandler.lockSendData">
+            <summary>
+            Lock for sending data. You are not suppose to lock this.
+            </summary>
+        </member>
+        <member name="F:Connectivity.ConnectionHandler.lockReceiveData">
+            <summary>
+            Lock for receiving data. You are not suppose to lock this.
+            </summary>
+        </member>
+        <member name="F:Connectivity.ConnectionHandler.lockProcessData">
+            <summary>
+            Locked during processing incoming data into whole packets.
+            </summary>
+        </member>
+        <member name="F:Connectivity.ConnectionHandler.lockSocket">
+            <summary>
+            Never used
+            </summary>
+        </member>
+        <member name="T:Connectivity.ConnectionHandler.delDataReceived">
+            <summary>
+            for eventDataReceived
+            </summary>
+            <param name="rawPacket"></param>
+        </member>
+        <member name="E:Connectivity.ConnectionHandler.eventDataReceived">
+            <summary>
+            Will be fired when Data are received. You normally shouldnt do anything with this - subscribe to Connection Handler events!
+            </summary>
+        </member>
+        <member name="T:Connectivity.ConnectionHandler.delDataSent">
+            <summary>
+            for eventDataSent
+            </summary>
+            <param name="rawPacket"></param>
+        </member>
+        <member name="E:Connectivity.ConnectionHandler.eventDataSent">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Connectivity.ConnectionHandler.ReceivedPackets">
+            <summary>
+            Normally you should do anything with this.
+            </summary>
+            <example>
+            You should receive packets from handler like this:
+            <code>
+            while (HasPacketsToHandle())
+                var packet = GetPacket();
+            </code>
+            </example>
+        </member>
+        <member name="P:Connectivity.ConnectionHandler.Connected">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Connectivity.ConnectionHandler.ReceivedDataBuffer">
+            <summary>
+            You shouldnt do anything with this, it is purely for server or client
+            </summary>
+        </member>
+        <member name="P:Connectivity.ConnectionHandler.BufferToSend">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Connectivity.ConnectionHandler.Close">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Connectivity.ConnectionHandler.Dispose">
+            <summary>
+            Dispose object after work
+            </summary>
+        </member>
+        <member name="M:Connectivity.ConnectionHandler.GetPacket">
+            <summary>
+            Get first packet from queue (packet that came first (FIFO))
+            </summary>
+            <returns>Returns packet. If queue is empty it will return null.</returns>
+        </member>
+        <member name="M:Connectivity.ConnectionHandler.HavePacketsToHandle">
+            <summary>
+            Data can be incomplete thus HavePacketsToHandle() will return 0 in this case even after this event was fired.
+            </summary>
+            <returns>True if there are data to handle</returns>
+        </member>
+        <member name="M:Connectivity.ConnectionHandler.HasPacketsToHandle">
+            <summary>
+            Data can be incomplete thus HasPacketsToHandle() will return 0 in this case even after this event was fired.
+            </summary>
+            <returns>True if there are data to handle</returns>
+        </member>
+        <member name="M:Connectivity.ConnectionHandler.FireEventDataReceived(Connectivity.RawPacket)">
+            <summary>
+            Notify that data were received and are processed. Data can be incomplete thus HavePacketsToHandle() will return 0 in this case even after this event was fired.
+            </summary>
+            <param name="data"></param>
+        </member>
+        <member name="M:Connectivity.ConnectionHandler.FireEventDataSent(Connectivity.RawPacket)">
+            <summary>
+            
+            </summary>
+            <param name="data"></param>
+        </member>
+        <member name="M:Connectivity.ConnectionHandler.SendData(Connectivity.RawPacket)">
+            <summary>
+            Override this method
+            </summary>
+            <param name="data"></param>
+        </member>
+        <member name="M:Connectivity.ConnectionHandler.SendData(Connectivity.ConnectionHandler,Connectivity.RawPacket)">
+            <summary>
+            This can send direct message to socket.
+            Be carefull - it does not check whether socket is open or not.
+            </summary>
+            <param name="clientConnectionHandler"></param>
+            <param name="data"></param>
+        </member>
+        <member name="M:Connectivity.ConnectionHandler.IsSocketConnected(System.Net.Sockets.Socket)">
+            <summary>
+            Check if socket is open
+            </summary>
+            <param name="s"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Connectivity.Packet">
+             <summary>
+             Wrapper around RawPacket - provides methods for simple work with data in packet without working with each bit individually.
+             Some terms to know:
+             How packet actually looks? Packet is just string of chars, for example 0x06 (packet ID) 0x03(data length) 0x65 0x98 0x49 (data sequence) 
+             RawData: data sequence in packet with length property. Data in sequence are separated by <see cref="F:Connectivity.Packet.DataSeparator">DataSeparator</see> raw Datasequence can look like this: "Rasto*12*1114" (* is data separator)
+             RawPacket: string of packetID, data_length and data sequence
+             PacketData: similar to list - you can reach each data in data sequence by index (data in datasequence can by separated)
+            
+             Packet has to be "assembled" before sending.
+             Packet is assembled when it comes from sender - we have to disassemble it before work.
+             Assembled means that his byte array was properly filled - byte array is what we are actualy sending thru network.
+             This tells us if packet was already assembled or not.
+             </summary>
+        </member>
+        <member name="F:Connectivity.Packet.DataSeparator">
+            <summary>
+            Data separator for packet data sequences "Rasto*12*1114" (* is data separator)
+            </summary>
+        </member>
+        <member name="M:Connectivity.Packet.#ctor(System.Int32,System.String,System.UInt16)">
+            <summary>
+            Creates packet from scratch with basic given parameters
+            </summary>
+            <param name="p_packetID"></param>
+            <param name="p_data"></param>
+            <param name="p_dataLength"></param>
+        </member>
+        <member name="M:Connectivity.Packet.#ctor(System.Int32,System.String)">
+            <summary>
+            Creates packet from scratch with basic given parameters
+            </summary>
+            <param name="p_packetID"></param>
+            <param name="p_data"></param>
+        </member>
+        <member name="M:Connectivity.Packet.#ctor(System.Byte[],System.Int32)">
+            <summary>
+            Converts byte array to packet
+            </summary>
+            <param name="p_dataPacket"></param>
+            <param name="p_bytesReceived"></param>
+        </member>
+        <member name="M:Connectivity.Packet.#ctor(Connectivity.RawPacket)">
+            <summary>
+            Creates Packet from RawPacket
+            </summary>
+            <param name="rawPacket"></param>
+        </member>
+        <member name="P:Connectivity.Packet.RawData">
+            <summary>
+            Returns RawData of the packet
+            </summary>
+        </member>
+        <member name="P:Connectivity.Packet.DataLength">
+            <summary>
+            Lenght of data sequence in packet (with delimiter character)
+            </summary>
+        </member>
+        <member name="P:Connectivity.Packet.Length">
+            <summary>
+            Length of whole packet - packetID + length value + data
+            </summary>
+        </member>
+        <member name="P:Connectivity.Packet.Assembled">
+            <summary>
+            Packet has to be "assembled" before sending.
+            Packet is assembled when it comes from sender - we have to disassemble it before work.
+            Assembled means that his byte array was properly filled - byte array is what we are actualy sending thru network.
+            This tells us if packet was already assembled or not.
+            </summary>
+        </member>
+        <member name="P:Connectivity.Packet.RawPacket">
+            <summary>
+            Returns raw packet of actual Packet
+            </summary>
+        </member>
+        <member name="P:Connectivity.Packet.PacketID">
+            <summary>
+            ID of packet - used to determine what kind of data this packet holds or what action this packet triggers
+            </summary>
+        </member>
+        <member name="P:Connectivity.Packet.Data">
+            <summary>
+            similar to list - you can reach each data in data sequence by index (data in datasequence can by separated)
+            </summary>
+        </member>
+        <member name="M:Connectivity.Packet.SetNewPacketData(System.String)">
+            <summary>
+            Sets new PacketData from raw string
+            </summary>
+            <example>
+            string sdata = "Rasto*12*1114";
+            this.SetNewPacketData(sdata);
+            </example>
+            <param name="data"></param>
+        </member>
+        <member name="M:Connectivity.Packet.GetDataOnIndex(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="index"></param>
+            <returns>Returns string data on index. It it does not exist it returns ""</returns>
+        </member>
+        <member name="M:Connectivity.Packet.GetIntDataOnIndex(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="index"></param>
+            <returns>Converts STRING data to int and returns it. If data does not exist then returns 0</returns>
+        </member>
+        <member name="M:Connectivity.Packet.GetFloatDataOnIndex(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="index"></param>
+            <returns>Converts STRING data to float and returns it. If data does not exist then returns 0</returns>
+        </member>
+        <member name="M:Connectivity.Packet.GetMessageLength(Connectivity.RawPacket,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="p_packet"></param>
+            <param name="p_offset"></param>
+            <returns>Actual datasequence size of received RawPacket</returns>
+        </member>
+        <member name="M:Connectivity.Packet.SeparatePackets(Connectivity.RawPacket,System.Int32,Connectivity.RawPacket@,System.Collections.Generic.List{Connectivity.Packet}@)">
+            <summary>
+            Separates byte buffer to packets
+            </summary>
+            <param name="p_incomingPacket">Received packet</param>
+            <param name="p_remainingBufferExpectingBytes">How many bytes remainingBuffer expects</param>
+            <param name="r_remainingBuffer">Remaining buffer packet</param>
+            <param name="r_packets">reference to not processed received packets</param>
+            <returns>Returns int expectingBytes</returns>
+        </member>
+        <member name="M:Connectivity.Packet.PrintRawPacket">
+            <summary>
+            Prints individual bites of raw packet
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Connectivity.Packet.PrintByteArray(System.Byte[],System.Int32)">
+            <summary>
+            Prints byte array
+            </summary>
+            <param name="bytes"></param>
+            <param name="size"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Connectivity.PacketData">
+            <summary>
+            Wrapper around raw data sequence in packet. You can work with each data in datasequence individually.
+            </summary>
+            <example>
+            Raw data sequence: "Rasto*12*14444"
+            Data on index 0: Rasto
+            Data on index 1: 12
+            etc.
+            </example>
+        </member>
+        <member name="M:Connectivity.PacketData.#ctor">
+            <summary>
+            Creates empty PacketData
+            </summary>
+        </member>
+        <member name="M:Connectivity.PacketData.#ctor(System.String)">
+            <summary>
+            Creates PacketData from data sequence, eg: "Rasto*12*14444"
+            </summary>
+            <param name="p_data"></param>
+        </member>
+        <member name="P:Connectivity.PacketData.RawData">
+            <summary>
+            Raw data sequence eg: "Rasto*12*14444"
+            </summary>
+        </member>
+        <member name="P:Connectivity.PacketData.Count">
+            <summary>
+            How many data pieces are in DataSequence
+            </summary>
+        </member>
+        <member name="P:Connectivity.PacketData.Data">
+            <summary>
+            List of datas in datasequence
+            </summary>
+        </member>
+        <member name="M:Connectivity.PacketData.GetDataOnIndex(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="index"></param>
+            <returns>Returns STRING data from datasequence on index. It not exist then returns ""</returns>
+        </member>
+        <member name="M:Connectivity.PacketData.GetIntDataOnIndex(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="index"></param>
+            <returns>Converts STRING data to int and returns it. If data does not exist then returns 0</returns>
+        </member>
+        <member name="M:Connectivity.PacketData.GetUintDataOnIndex(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="index"></param>
+            <returns>Converts STRING data to uint and returns it. If data does not exist then returns 0</returns>
+        </member>
+        <member name="M:Connectivity.PacketData.GetFloatDataOnIndex(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="index"></param>
+            <returns>Converts STRING data to float and returns it. If data does not exist then returns 0</returns>
+        </member>
+        <member name="T:Connectivity.RawPacket">
+            <summary>
+            Safely stores raw packet data in byte array with size property - can store \0 char or any other sequence of whatever...
+            </summary>
+        </member>
+        <member name="M:Connectivity.RawPacket.#ctor(System.Byte[],System.Int32)">
+            <summary>
+            Creater raw packet from byte array
+            </summary>
+            <param name="p_packet"></param>
+            <param name="p_size"></param>
+        </member>
+        <member name="M:Connectivity.RawPacket.#ctor">
+            <summary>
+            Ceates empty raw packet
+            </summary>
+        </member>
+        <member name="P:Connectivity.RawPacket.Data">
+            <summary>
+            byte array of whole packet
+            </summary>
+        </member>
+        <member name="P:Connectivity.RawPacket.Size">
+            <summary>
+            size of packet
+            </summary>
+        </member>
+        <member name="M:Connectivity.RawPacket.PrintRawPacket">
+            <summary>
+            Prints packet bit by bit
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Connectivity.RawPacket.PrintByteArray(System.Byte[],System.Int32)">
+            <summary>
+            Prints byte array bit by bit
+            </summary>
+            <param name="bytes"></param>
+            <param name="size"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Connectivity.SocketClient">
+            <summary>
+            Wrapper around TcpClient. Provides methods for simple connecting, receiving/sending data
+            </summary>
+            
+        </member>
+        <member name="F:Connectivity.SocketClient.BufferSize">
+            <summary>
+            Buffer size of windows socket
+            </summary>
+        </member>
+        <member name="T:Connectivity.SocketClient.delConnectionStatusChanged">
+            <summary>
+            Delegate for eventConnectionStatusChanged
+            </summary>
+            <param name="status"></param>
+        </member>
+        <member name="E:Connectivity.SocketClient.eventConnectionStatusChanged">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Connectivity.SocketClient.ConnectionStatus">
+            <summary>
+            Client connection possible statuses
+            </summary>
+        </member>
+        <member name="F:Connectivity.SocketClient.ConnectionStatus.NeverConnected">
+            <summary>
+            initial status
+            </summary>
+        </member>
+        <member name="F:Connectivity.SocketClient.ConnectionStatus.Connecting">
+            <summary>
+            client is trying to connect
+            </summary>
+        </member>
+        <member name="F:Connectivity.SocketClient.ConnectionStatus.Connected">
+            <summary>
+            connection was successful
+            </summary>
+        </member>
+        <member name="F:Connectivity.SocketClient.ConnectionStatus.AutoReconnecting">
+            <summary>
+            connection dropped and it is trying to reconnect
+            </summary>
+        </member>
+        <member name="F:Connectivity.SocketClient.ConnectionStatus.DisconnectedByUser">
+            <summary>
+            client closed the connection
+            </summary>
+        </member>
+        <member name="F:Connectivity.SocketClient.ConnectionStatus.DisconnectedByHost">
+            <summary>
+             server closed the connection
+            </summary>
+        </member>
+        <member name="F:Connectivity.SocketClient.ConnectionStatus.ConnectFail_Timeout">
+             <summary>
+            connection failed - time out
+             </summary>
+        </member>
+        <member name="F:Connectivity.SocketClient.ConnectionStatus.ReceiveFail_Timeout">
+            <summary>
+            data receive failed - time out
+            </summary>
+        </member>
+        <member name="F:Connectivity.SocketClient.ConnectionStatus.SendFail_Timeout">
+            <summary>
+            data send failed - time out
+            </summary>
+        </member>
+        <member name="F:Connectivity.SocketClient.ConnectionStatus.SendFail_NotConnected">
+            <summary>
+            data send failed - client is not connected
+            </summary>
+        </member>
+        <member name="F:Connectivity.SocketClient.ConnectionStatus.Error">
+            <summary>
+            Other error
+            </summary>
+        </member>
+        <member name="M:Connectivity.SocketClient.#ctor(System.String,System.Int32,Connectivity.ConnectionProtocol,System.Boolean)">
+            <summary>
+            This constructor will not call connect() automatically, you have to connect it manually
+            </summary>
+            <param name="hostname"></param>
+            <param name="port"></param>
+            <param name="iProtocol">Default is TCP, you can use TCP or UDP</param>
+            <param name="autoreconnect"></param>
+        </member>
+        <member name="M:Connectivity.SocketClient.#ctor(System.Net.IPAddress,System.Int32,Connectivity.ConnectionProtocol,System.Boolean)">
+            <summary>
+            This constructor will not call connect() automatically, you have to connect it manually
+            </summary>
+            <param name="ip"></param>
+            <param name="port"></param>
+            <param name="iProtocol">Default is TCP, you can use TCP or UDP</param>
+            <param name="autoreconnect"></param>
+        </member>
+        <member name="M:Connectivity.SocketClient.Connect">
+            <summary>
+            Try connecting to the remote host
+            </summary>
+        </member>
+        <member name="M:Connectivity.SocketClient.Disconnect">
+            <summary>
+            Try disconnecting from the remote host
+            </summary>
+        </member>
+        <member name="M:Connectivity.SocketClient.Send(System.String)">
+            <summary>
+            Try sending a string to the remote host
+            </summary>
+            <param name="data">The data to send</param>
+        </member>
+        <member name="M:Connectivity.SocketClient.Send(Connectivity.RawPacket)">
+            <summary>
+            Try sending byte data to the remote host
+            </summary>
+            <param name="data">The data to send</param>
+        </member>
+        <member name="M:Connectivity.SocketClient.Dispose">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Connectivity.SocketClient.Protocol">
+            <summary>
+            Connection socket protocol used 
+            </summary>
+        </member>
+        <member name="F:Connectivity.SocketClient.Handler">
+            <summary>
+            This handler is only for shadowing some properties without direct access to SocketClient
+            </summary>
+        </member>
+        <member name="P:Connectivity.SocketClient.SyncLock">
+            <summary>
+            Syncronizing object for asynchronous operations
+            </summary>
+        </member>
+        <member name="P:Connectivity.SocketClient.DataEncoding">
+            <summary>
+            Encoding to use for sending and receiving
+            </summary>
+        </member>
+        <member name="P:Connectivity.SocketClient.ConnectionState">
+            <summary>
+            Current state that the connection is in
+            </summary>
+        </member>
+        <member name="P:Connectivity.SocketClient.AutoReconnect">
+            <summary>
+            True to autoreconnect at the given reconnection interval after a remote host closes the connection
+            </summary>
+        </member>
+        <member name="P:Connectivity.SocketClient.ReconnectInterval">
+            <summary>
+            [ms]
+            </summary>
+        </member>
+        <member name="P:Connectivity.SocketClient.IP">
+            <summary>
+            IP of the remote host
+            </summary>
+        </member>
+        <member name="P:Connectivity.SocketClient.Port">
+            <summary>
+            Port to connect to on the remote host
+            </summary>
+        </member>
+        <member name="P:Connectivity.SocketClient.ReceiveTimeout">
+            <summary>
+            Time to wait after a receive operation is attempted before a timeout event occurs
+            </summary>
+        </member>
+        <member name="P:Connectivity.SocketClient.SendTimeout">
+            <summary>
+            Time to wait after a send operation is attempted before a timeout event occurs
+            </summary>
+        </member>
+        <member name="P:Connectivity.SocketClient.ConnectTimeout">
+            <summary>
+            Time to wait after a connection is attempted before a timeout event occurs
+            </summary>
+        </member>
+        <member name="T:Connectivity.SocketServer">
+            <summary>
+            To create a server instance call tcpServer(port_number)
+            To start the server instance you have to this.Start()
+            </summary>
+        </member>
+        <member name="F:Connectivity.SocketServer.BufferSize">
+            <summary>
+            Buffer for receiving data
+            </summary>
+        </member>
+        <member name="F:Connectivity.SocketServer.Protocol">
+            <summary>
+            Connection socket protocol used 
+            </summary>
+        </member>
+        <member name="P:Connectivity.SocketServer.Listener">
+            <summary>
+            Listener socket
+            </summary>
+        </member>
+        <member name="P:Connectivity.SocketServer.Port">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Connectivity.SocketServer.Listening">
+            <summary>
+            Is server already listening?
+            </summary>
+        </member>
+        <member name="P:Connectivity.SocketServer.ConnectionHandlers">
+            <summary>
+            All active connection handlers
+            </summary>
+        </member>
+        <member name="T:Connectivity.SocketServer.delClientConnected">
+            <summary>
+            Delegate for event eventClientConnected
+            </summary>
+            <param name="connHandler"></param>
+        </member>
+        <member name="E:Connectivity.SocketServer.eventClientConnected">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Connectivity.SocketServer.delClientDisconnected">
+            <summary>
+            Delegate for event eventClientDisconnected
+            </summary>
+            <param name="connHandler"></param>
+        </member>
+        <member name="E:Connectivity.SocketServer.eventClientDisconnected">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Connectivity.SocketServer.#ctor(System.Int32,Connectivity.ConnectionProtocol)">
+            <summary>
+            Just creates instance of server on port, it has to be started manually
+            </summary>
+            <param name="iPort"></param>
+            <param name="iProtocol">Default is TCP, you can use TCP or UDP</param>
+        </member>
+        <member name="M:Connectivity.SocketServer.Dispose">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Connectivity.SocketServer.Start">
+            <summary>
+            Start the server - listening on port
+            </summary>
+        </member>
+    </members>
+</doc>
